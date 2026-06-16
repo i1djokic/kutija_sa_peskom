@@ -1,0 +1,35 @@
+---
+- name: Update package cache (Debian)
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == 'Debian'
+
+- name: Install base packages
+  ansible.builtin.package:
+    name: "{{ base_packages }}"
+    state: present
+
+- name: Install extra packages
+  ansible.builtin.package:
+    name: "{{ extra_packages }}"
+    state: present
+  when: extra_packages | length > 0
+
+- name: Install development packages
+  ansible.builtin.package:
+    name: "{{ dev_packages }}"
+    state: present
+  when: install_dev_packages | default(false)
+
+- name: Remove unwanted packages
+  ansible.builtin.package:
+    name: "{{ remove_packages }}"
+    state: absent
+  when: remove_packages | length > 0
+
+- name: Upgrade all packages
+  ansible.builtin.package:
+    name: "*"
+    state: latest
+  when: upgrade_system | default(false)

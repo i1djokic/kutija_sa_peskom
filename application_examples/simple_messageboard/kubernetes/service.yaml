@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: messageboard
+  labels:
+    app: messageboard
+spec:
+  type: ClusterIP
+  selector:
+    app: messageboard
+  ports:
+  - port: 80
+    targetPort: 80

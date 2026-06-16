@@ -1,0 +1,18 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/rocky9"
+  config.vm.box_check_update = false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.hostname = "k3s-server"
+
+  config.vm.network "private_network", ip: "192.168.64.10"
+
+  config.vm.provider :libvirt do |l|
+    l.memory = 4096
+    l.cpus = 2
+    l.qemu_use_session = false
+    l.driver = "kvm"
+    l.cpu_mode = "host-model"
+  end
+
+  config.vm.provision "shell", path: "provision.sh"
+end

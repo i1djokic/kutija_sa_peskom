@@ -1,0 +1,95 @@
+# -- Override the name of the release
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Additional labels for all resources
+additionalLabels: {}
+
+mariadb:
+  image:
+    # -- MariaDB image repository
+    repository: mariadb
+    # -- MariaDB image tag
+    tag: "11.4"
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+
+  # -- Database name to create on startup
+  database: app
+  # -- Root password for MariaDB
+  rootPassword: changeme
+
+  persistence:
+    # -- Enable persistent storage
+    enabled: true
+    # -- Storage class (empty string uses default)
+    storageClass: ""
+    # -- Access mode
+    accessMode: ReadWriteOnce
+    # -- Size of the persistent volume
+    size: 2Gi
+
+  # -- Resource limits and requests
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+phpmyadmin:
+  image:
+    # -- phpMyAdmin image repository
+    repository: phpmyadmin/phpmyadmin
+    # -- phpMyAdmin image tag
+    tag: latest
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+
+  # -- Number of replicas
+  replicaCount: 1
+
+  # -- Resource limits and requests
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  service:
+    # -- Kubernetes service type (LoadBalancer for external access)
+    type: ClusterIP
+    # -- Service port
+    port: 80
+    # -- Node port (when type is NodePort)
+    nodePort: ""
+    # -- Annotations for the service
+    annotations: {}
+
+ingress:
+  # -- Enable ingress for phpMyAdmin
+  enabled: true
+  # -- Ingress class name
+  className: ""
+  # -- Ingress annotations
+  annotations: {}
+  tls:
+    # -- Enable TLS/HTTPS
+    enabled: true
+    # -- Auto-generate a self-signed certificate via a pre-install job
+    autoGenerate: true
+    # -- cert-manager configuration (requires cert-manager installed)
+    certManager:
+      # -- Enable cert-manager for automatic certificate provisioning
+      enabled: false
+      # -- Issuer reference for cert-manager
+      issuerRef:
+        name: selfsigned-issuer
+        kind: ClusterIssuer
+    # -- Existing TLS secret name (mutually exclusive with autoGenerate and certManager)
+    existingSecret: ""
+    # -- Hostnames for TLS
+    hosts:
+      - db.test

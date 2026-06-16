@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mariadb.fullname" . }}-pma
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+    app.kubernetes.io/component: phpmyadmin
+spec:
+  replicas: {{ .Values.phpmyadmin.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "mariadb.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: phpmyadmin
+  template:
+    metadata:
+      labels:
+        {{- include "mariadb.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: phpmyadmin
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: phpmyadmin
+          image: "{{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}"
+          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: PMA_HOST
+              value: {{ include "mariadb.fullname" . }}-db
+            - name: PMA_PORT
+              value: "3306"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.phpmyadmin.resources | nindent 12 }}

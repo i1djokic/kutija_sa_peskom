@@ -1,0 +1,9 @@
+---
+- name: Configure Apache web servers
+  hosts: web
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: apache
+      tags: apache

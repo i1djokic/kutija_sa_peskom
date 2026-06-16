@@ -1,0 +1,19 @@
+<VirtualHost *:{{ item.port }}>
+    ServerName {{ item.servername }}
+    ServerAdmin {{ apache_server_admin }}
+
+    DocumentRoot {{ item.document_root }}
+
+    <Directory {{ item.document_root }}>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog {{ apache_log_dir }}/{{ item.servername }}_error.log
+    CustomLog {{ apache_log_dir }}/{{ item.servername }}_access.log combined
+
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+    </IfModule>
+</VirtualHost>

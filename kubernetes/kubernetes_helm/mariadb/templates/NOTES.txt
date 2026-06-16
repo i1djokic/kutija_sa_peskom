@@ -1,0 +1,20 @@
+1. Get the phpMyAdmin external URL:
+
+{{- if eq .Values.phpmyadmin.service.type "LoadBalancer" }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mariadb.fullname" . }}-pma --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "phpMyAdmin URL: http://$SERVICE_IP:{{ .Values.phpmyadmin.service.port }}"
+{{- end }}
+
+{{- if .Values.ingress.enabled }}
+  Access phpMyAdmin at: https://{{ (index .Values.ingress.tls.hosts 0) }}
+  Make sure {{ (index .Values.ingress.tls.hosts 0) }} resolves to your ingress controller's external IP.
+{{- end }}
+
+2. Connect your application to MariaDB:
+   Host: {{ include "mariadb.fullname" . }}-db
+   Port: 3306
+   Database: {{ .Values.mariadb.database }}
+   User: root
+   Password: {{ .Values.mariadb.rootPassword }}
+
+   MariaDB is only accessible within the cluster via ClusterIP service.

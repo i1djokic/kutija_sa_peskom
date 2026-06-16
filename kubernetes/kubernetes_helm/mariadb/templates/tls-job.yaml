@@ -1,0 +1,54 @@
+{{- if and .Values.ingress.tls.enabled .Values.ingress.tls.autoGenerate (not .Values.ingress.tls.existingSecret) (not .Values.ingress.tls.certManager.enabled) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "mariadb.fullname" . }}-tls-gen
+  labels:
+    {{- include "mariadb.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "mariadb.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "mariadb.fullname" . }}-tls
+      restartPolicy: Never
+      initContainers:
+        - name: openssl
+          image: alpine/openssl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+                -keyout /certs/tls.key \
+                -out /certs/tls.crt \
+                -subj "/CN={{ (index .Values.ingress.tls.hosts 0) }}" \
+                -addext "subjectAltName={{ include "mariadb.tlsSans" . }}" && \
+              chmod 644 /certs/tls.key /certs/tls.crt
+          volumeMounts:
+            - name: certs
+              mountPath: /certs
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              kubectl delete secret {{ include "mariadb.tlsSecretName" . }} -n {{ .Release.Namespace }} --ignore-not-found
+              kubectl create secret tls {{ include "mariadb.tlsSecretName" . }} \
+                --cert=/certs/tls.crt \
+                --key=/certs/tls.key \
+                -n {{ .Release.Namespace }}
+          volumeMounts:
+            - name: certs
+              mountPath: /certs
+      volumes:
+        - name: certs
+          emptyDir: {}
+{{- end }}

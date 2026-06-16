@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "opencode-ui.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.ingress.host }}`)
+      kind: Rule
+      services:
+        - name: {{ include "opencode-ui.fullname" . }}
+          port: {{ .Values.service.port }}
+  tls:
+    secretName: {{ .Values.ingress.tlsSecretName }}

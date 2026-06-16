@@ -1,0 +1,14 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/centos-stream-10"
+  config.vm.box_check_update = false
+
+  config.vm.provider :libvirt do |l|
+    l.memory = 2048
+    l.cpus = 2
+    l.qemu_use_session = false
+    l.driver = "kvm"
+    l.cpu_mode = "host-model"
+  end
+
+  config.vm.provision "shell", path: "provision.sh"
+end

@@ -1,0 +1,3 @@
+---
+# OS-specific variables are loaded by ansible_os_family in tasks
+# See RedHat.yml and Debian.yml for per-distro values

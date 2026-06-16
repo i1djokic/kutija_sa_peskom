@@ -1,0 +1,22 @@
+---
+env: production
+timezone: UTC
+ntp_servers:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+
+# Apache
+apache_listen_port: 80
+apache_servername: "{{ inventory_hostname }}"
+apache_document_root: /var/www/html
+
+# Packages
+base_packages:
+  - vim
+  - htop
+  - curl
+  - wget
+  - git
+  - tmux
+  - tree
+  - net-tools

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>digitalni pilicarnik</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+  [<a href="#/" id="home-link">Home</a>]
+  <span id="board-nav"></span>
+  [<a href="#" id="new-topic-link">New Topic</a>]
+  <span id="theme-toggle" class="theme-toggle">[Theme]</span>
+</div>
+
+<div class="page-header">
+  <pre class="ascii-chicken">
+  ___
+ ('v')
+((___))
+  " "
+  </pre>
+  <h1>digitalni pilicarnik</h1>
+  <span id="board-title" class="board-title">/general/</span>
+</div>
+
+<hr>
+
+<div id="new-thread-form" class="post-form">
+  <b>Start a New Thread</b>
+  <form id="thread-form">
+    <table>
+      <tbody>
+        <tr>
+          <td class="label">Name</td>
+          <td><input type="text" id="thread-name" maxlength="100" placeholder="Anonymous"></td>
+        </tr>
+        <tr>
+          <td class="label">Comment</td>
+          <td><textarea id="thread-content" maxlength="2000" rows="4" placeholder="Write something..." required></textarea></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" value="Create Thread"></td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
+
+<div id="board-view">
+  <div id="thread-list"></div>
+</div>
+
+<div id="thread-view" class="hidden">
+  <div class="back-link">[<a href="#" id="back-link">Return</a>] [<a href="#" id="new-topic-link-thread">New Topic</a>]</div>
+  <div id="thread-posts"></div>
+</div>
+
+<hr>
+
+<div class="footer">
+  <div id="board-nav-bottom"></div>
+  <div class="create-board">
+    <form id="create-board-form">
+      <input type="text" id="new-board-name" maxlength="50" placeholder="Create new channel..." pattern="[a-zA-Z0-9_-]+">
+      <input type="submit" value="+">
+    </form>
+    <span id="board-error" class="board-error"></span>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: opencode
+description: OpenCode AI coding agent web server
+type: application
+version: 0.1.0
+appVersion: latest
+home: https://opencode.ai
+icon: https://opencode.ai/favicon.ico
+sources:
+  - https://github.com/anomalyco/opencode
+kubeVersion: ">=1.19.0-0"
+keywords:
+  - ai
+  - coding
+  - agent
+  - opencode

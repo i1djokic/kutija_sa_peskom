@@ -1,0 +1,9 @@
+---
+collections:
+  - name: ansible.builtin
+  - name: community.general
+
+roles:
+  # External roles can be listed here, e.g.:
+  # - name: geerlingguy.apache
+  #   version: 3.1.0

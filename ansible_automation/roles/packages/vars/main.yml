@@ -1,0 +1,16 @@
+---
+# OS-specific package mapping
+_dev_packages_rhel:
+  - gcc
+  - make
+  - python3-pip
+  - python3-devel
+
+_dev_packages_debian:
+  - gcc
+  - make
+  - python3-pip
+  - python3-dev
+  - build-essential
+
+dev_packages: "{{ _dev_packages_rhel if ansible_os_family == 'RedHat' else _dev_packages_debian }}"

@@ -1,0 +1,82 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/anomalyco/opencode
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+service:
+  type: LoadBalancer
+  port: 8080
+  nodePort: ""
+  annotations: {}
+
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+additionalLabels: {}
+
+extraEnv: []
+
+config:
+  port: 8080
+  hostname: "0.0.0.0"
+  password: ""
+  username: "opencode"
+  cors: []
+  mdns: false
+
+persistence:
+  enabled: false
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  existingClaim: ""
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  host: opc.test
+  paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls: []
+  autoTLS: true

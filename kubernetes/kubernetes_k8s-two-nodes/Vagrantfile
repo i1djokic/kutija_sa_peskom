@@ -1,0 +1,45 @@
+# Kubernetes lab for macOS (ARM and Intel)
+# Provider: UTM (Free & Open-Source) - Recommended for Apple Silicon
+# OS: CentOS Stream 10 (ARM64) via custom base box
+# IMPORTANT: For Apple Silicon M1/M2/M3/M4 Macs:
+#   - VirtualBox does NOT support ARM64 virtualization
+#   - UTM is FREE and OPEN-SOURCE (https://mac.getutm.app/)
+#   - Install vagrant_utm plugin: vagrant plugin install vagrant_utm
+#   - Use: vagrant up --provider=utm
+# Prerequisite: build and add centos-stream-10-base box (see ../vm_image_builder/)
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos-stream-10-base"
+  config.vm.box_check_update = false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  # =====================
+  # Master Node
+  # =====================
+  config.vm.define "master" do |m|
+    m.vm.hostname = "k8s-master"
+
+    m.vm.provider "utm" do |v|
+      v.name = "k8s-master"
+      v.memory = 4096
+      v.cpus = 2
+    end
+
+    m.vm.provision "shell", path: "provision.sh", args: ["master"]
+  end
+
+  # =====================
+  # Worker Node
+  # =====================
+  config.vm.define "worker" do |w|
+    w.vm.hostname = "k8s-worker"
+
+    w.vm.provider "utm" do |v|
+      v.name = "k8s-worker"
+      v.memory = 2048
+      v.cpus = 1
+    end
+
+    w.vm.provision "shell", path: "provision.sh", args: ["worker"]
+  end
+end

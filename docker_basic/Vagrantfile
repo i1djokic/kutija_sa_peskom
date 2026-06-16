@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/bookworm"
+  config.vm.box_check_update = false
+  config.vm.hostname = "docker-vm"
+
+  config.vm.provider :libvirt do |l|
+    l.memory = 4096
+    l.cpus = 2
+    l.qemu_use_session = false
+    l.driver = "kvm"
+    l.cpu_mode = "host-model"
+  end
+
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 443, host: 8443
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 5432, host: 5432
+  config.vm.network "forwarded_port", guest: 6379, host: 6379
+
+  config.vm.provision "shell", path: "provision.sh"
+
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+end

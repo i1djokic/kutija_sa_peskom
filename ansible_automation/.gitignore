@@ -1,0 +1,4 @@
+*.retry
+/tmp/ansible_cache/
+collections/
+.vagrant/

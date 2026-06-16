@@ -1,0 +1,24 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/bookworm"
+  config.vm.box_check_update = false
+
+  vm_count = (ENV['VM_COUNT'] || 1).to_i
+
+  (1..vm_count).each do |i|
+    config.vm.define "ansible-target-#{i}" do |target|
+      target.vm.hostname = "ansible-target-#{i}"
+
+      target.vm.provider :libvirt do |l|
+        l.memory = 2048
+        l.cpus = 1
+        l.qemu_use_session = false
+        l.driver = "kvm"
+        l.cpu_mode = "host-model"
+      end
+
+      target.vm.network "private_network", type: "dhcp"
+
+      target.vm.provision "shell", path: "provision.sh", args: "target"
+    end
+  end
+end

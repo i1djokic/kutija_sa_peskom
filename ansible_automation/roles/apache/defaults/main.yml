@@ -1,0 +1,22 @@
+---
+apache_service: httpd
+apache_user: apache
+apache_group: apache
+apache_package: httpd
+apache_listen_port: 80
+apache_servername: localhost
+apache_server_admin: webmaster@localhost
+apache_document_root: /var/www/html
+apache_log_dir: /var/log/httpd
+apache_keepalive: On
+apache_max_keepalive_requests: 100
+apache_keepalive_timeout: 5
+apache_timeout: 300
+apache_modules_enabled:
+  - rewrite
+  - ssl
+  - headers
+apache_vhosts:
+  - servername: "{{ apache_servername }}"
+    document_root: "{{ apache_document_root }}"
+    port: "{{ apache_listen_port }}"

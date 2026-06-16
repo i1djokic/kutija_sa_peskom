@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Builder</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <h1>Image Builder</h1>
+    <span class="badge">127.0.0.1:5000</span>
+    <div class="header-right">
+      <button class="btn" id="refreshBtn" title="Refresh">&looparrow;</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Jobs</h2>
+      <button class="btn btn-sm" id="newJobBtn">+ New</button>
+    </div>
+    <div id="jobList" class="job-list">
+      <div class="empty-state" id="jobListEmpty">No jobs yet. Create one!</div>
+    </div>
+  </aside>
+
+  <section class="editor">
+    <div id="editorEmpty" class="empty-state">
+      <h2>Select or create a job</h2>
+      <p>Jobs define a Docker image build: Dockerfile content, image name and tag.</p>
+    </div>
+
+    <div id="editorForm" class="hidden">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Job Name</label>
+          <input id="jobName" type="text" placeholder="my-api">
+        </div>
+        <div class="form-group">
+          <label>Image Name</label>
+          <input id="imageName" type="text" placeholder="my-api-image">
+        </div>
+        <div class="form-group form-group-sm">
+          <label>Tag</label>
+          <input id="imageTag" type="text" placeholder="latest" value="latest">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Dockerfile</label>
+        <textarea id="dockerfileContent" rows="16" spellcheck="false">FROM python:3.12-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["python", "main.py"]</textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn" id="saveBtn">Save</button>
+        <button class="btn btn-primary" id="buildBtn">Build</button>
+        <button class="btn btn-danger" id="deleteBtn">Delete</button>
+        <span id="savedIndicator" class="saved-indicator hidden">&#10003; Saved</span>
+      </div>
+
+      <div id="buildSection" class="hidden">
+        <hr>
+        <div class="build-header">
+          <h3>Builds</h3>
+          <button class="btn btn-sm btn-outline" id="refreshBuildsBtn">Refresh</button>
+        </div>
+        <div id="buildList"></div>
+        <div id="buildLog" class="hidden">
+          <div class="build-log-header">
+            <span id="buildLogTitle">Build Log</span>
+            <button class="btn btn-sm btn-outline" id="closeLogBtn">&times;</button>
+          </div>
+          <pre id="buildLogContent"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

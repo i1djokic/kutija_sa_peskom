@@ -1,0 +1,19 @@
+---
+base_packages:
+  - vim
+  - htop
+  - curl
+  - wget
+  - git
+  - tmux
+  - tree
+
+extra_packages: []
+
+dev_packages:
+  - gcc
+  - make
+  - python3-pip
+  - python3-devel
+
+remove_packages: []

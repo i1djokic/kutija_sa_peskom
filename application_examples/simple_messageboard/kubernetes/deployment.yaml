@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messageboard
+  labels:
+    app: messageboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messageboard
+  template:
+    metadata:
+      labels:
+        app: messageboard
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+      - name: nginx
+        image: 127.0.0.1:5000/simple_messageboard:latest
+        ports:
+        - containerPort: 80
+        env:
+        # Set DB_TYPE to "sqlite" for SQLite (no external DB needed)
+        # Set DB_TYPE to "mysql" (default) for MySQL/MariaDB
+        - name: DB_TYPE
+          value: "mysql"
+        - name: DB_HOST
+          value: "my-db-mariadb"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-db-mariadb
+              key: mariadb-root-password
+        - name: DB_NAME
+          value: "app"
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            add:
+            - NET_BIND_SERVICE
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        volumeMounts:
+        - name: nginx-run
+          mountPath: /run/nginx
+        - name: nginx-log
+          mountPath: /var/log/nginx
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: nginx-run
+        emptyDir: {}
+      - name: nginx-log
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}

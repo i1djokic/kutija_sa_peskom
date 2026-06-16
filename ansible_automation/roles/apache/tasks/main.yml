@@ -1,0 +1,61 @@
+---
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  when: ansible_os_family in ['RedHat', 'Debian']
+
+- name: Install Apache
+  ansible.builtin.package:
+    name: "{{ apache_package }}"
+    state: present
+
+- name: Enable Apache modules (Debian)
+  ansible.builtin.command:
+    cmd: "{{ apache_mod_enable_cmd }} {{ item }}"
+  loop: "{{ apache_modules_enabled }}"
+  when: ansible_os_family == 'Debian'
+  notify: Restart Apache
+  changed_when: false
+
+- name: Ensure Apache is enabled and running
+  ansible.builtin.service:
+    name: "{{ apache_service }}"
+    state: started
+    enabled: true
+
+- name: Create document root
+  ansible.builtin.file:
+    path: "{{ apache_document_root }}"
+    state: directory
+    owner: "{{ apache_user }}"
+    group: "{{ apache_group }}"
+    mode: "0755"
+
+- name: Deploy virtual host configuration
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: "{{ apache_vhost_dir }}/{{ item.servername }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ apache_vhosts }}"
+  notify: Restart Apache
+
+- name: Deploy index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ apache_document_root }}/index.html"
+    owner: "{{ apache_user }}"
+    group: "{{ apache_group }}"
+    mode: "0644"
+
+- name: Configure firewall for Apache (RedHat)
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop:
+    - http
+    - https
+  when: ansible_os_family == 'RedHat'
+  ignore_errors: true

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry UI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <h1>Registry UI</h1>
+    <span class="registry-badge">registry.test:5000</span>
+    <div class="header-stats">
+      <span class="stat" id="statRepos">0 repos</span>
+      <span class="stat-sep">|</span>
+      <span class="stat" id="statTags">0 tags</span>
+      <span class="stat-sep">|</span>
+      <span class="stat" id="statVersion">v2 --</span>
+    </div>
+    <div class="header-right">
+      <input id="searchInput" class="search-input" type="text" placeholder="Search repositories...">
+      <button id="refreshBtn" class="btn" title="Refresh">&#x21bb;</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="loading" class="loading hidden">Loading...</div>
+  <div id="error" class="error hidden"></div>
+  <div id="repoList" class="repo-grid"></div>
+</main>
+
+<!-- Tags Modal -->
+<div id="tagModal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content modal-lg">
+    <div class="modal-header">
+      <h2 id="modalTitle">Tags</h2>
+      <button id="modalClose" class="btn close-btn">&times;</button>
+    </div>
+    <div id="modalBody" class="modal-body"></div>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div id="confirmDialog" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-content modal-sm">
+    <div class="modal-header">
+      <h2>Confirm Delete</h2>
+      <button class="btn close-btn" onclick="closeConfirm()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg"></p>
+      <div class="confirm-actions">
+        <button class="btn" onclick="closeConfirm()">Cancel</button>
+        <button id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

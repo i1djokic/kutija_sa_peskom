@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  containers:
+    - name: apache-hello-world
+      image: 127.0.0.1:5000/apache-hello-world
+      ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+spec:
+  selector:
+    app: helloworld
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http
+    - port: 443
+      targetPort: 80
+      name: https
+  type: LoadBalancer
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: ttt-redirect
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: helloworld-http
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`ttt.test`)
+      kind: Rule
+      middlewares:
+        - name: ttt-redirect
+      services:
+        - name: helloworld
+          port: 80
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: helloworld-https
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ttt.test`)
+      kind: Rule
+      services:
+        - name: helloworld
+          port: 80
+  tls:
+    secretName: ttt-tls

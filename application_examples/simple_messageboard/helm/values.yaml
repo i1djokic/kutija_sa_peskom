@@ -1,0 +1,73 @@
+replicaCount: 1
+
+image:
+  repository: 127.0.0.1:5000/simple_messageboard
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  hosts:
+    - host: msgb.test
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - msgb.test
+      secretName: msgb-tls
+
+db:
+  type: mysql
+  host: my-db-mariadb
+  port: "3306"
+  user: root
+  name: app
+  existingSecret: my-db-mariadb
+  existingSecretKey: mariadb-root-password
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - NET_BIND_SERVICE
+
+probes:
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

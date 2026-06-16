@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ apache_servername }}</title>
+</head>
+<body>
+    <h1>Welcome to {{ apache_servername }}</h1>
+    <p>Environment: {{ env | default('unknown') }}</p>
+    <p>Managed by Ansible</p>
+</body>
+</html>

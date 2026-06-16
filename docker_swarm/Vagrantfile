@@ -1,0 +1,46 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/bookworm"
+  config.vm.box_check_update = false
+
+  worker_count = (ENV['WORKER_COUNT'] || 2).to_i
+
+  config.vm.define "manager" do |manager|
+    manager.vm.hostname = "manager"
+
+    manager.vm.provider :libvirt do |l|
+      l.memory = 4096
+      l.cpus = 2
+      l.qemu_use_session = false
+      l.driver = "kvm"
+      l.cpu_mode = "host-model"
+    end
+
+    manager.vm.network "forwarded_port", guest: 80, host: 8080
+    manager.vm.network "forwarded_port", guest: 443, host: 8443
+    manager.vm.network "forwarded_port", guest: 3000, host: 3000
+
+    manager.vm.network "private_network", type: "dhcp"
+
+    manager.vm.provision "shell", path: "provision.sh", args: "manager"
+  end
+
+  (1..worker_count).each do |i|
+    config.vm.define "worker-#{i}" do |worker|
+      worker.vm.hostname = "worker-#{i}"
+
+      worker.vm.provider :libvirt do |l|
+        l.memory = 2048
+        l.cpus = 1
+        l.qemu_use_session = false
+        l.driver = "kvm"
+        l.cpu_mode = "host-model"
+      end
+
+      worker.vm.network "private_network", type: "dhcp"
+
+      worker.vm.provision "shell", path: "provision.sh", args: "worker"
+    end
+  end
+
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+end

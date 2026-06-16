@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: 127.0.0.1:5000/opencode-ui
+  tag: v1
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+namespace: opencode-ui
+
+service:
+  type: LoadBalancer
+  port: 8888
+  targetPort: 8000
+
+ingress:
+  host: opc.test
+  tlsSecretName: registry-tls
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "200m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"

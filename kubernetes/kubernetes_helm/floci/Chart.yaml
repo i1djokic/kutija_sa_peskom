@@ -1,0 +1,17 @@
+apiVersion: v2
+name: floci
+description: Fast, free, open-source AWS emulator built with Quarkus Native
+type: application
+version: 0.1.0
+appVersion: latest
+home: https://floci.io/
+icon: https://floci.io/favicon.ico
+sources:
+  - https://github.com/floci-io/floci
+kubeVersion: ">=1.19.0-0"
+keywords:
+  - aws
+  - emulator
+  - localstack
+  - test
+  - floci

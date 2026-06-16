@@ -1,0 +1,16 @@
+OpenCode — AI coding agent web server (no auth, free models included)
+
+  Access: https://{{ .Values.ingress.host }}
+  Port:   {{ .Values.service.port }}
+
+{{- if eq .Values.service.type "LoadBalancer" }}
+  LoadBalancer IP:
+    kubectl get --namespace {{ .Release.Namespace }} svc {{ include "opencode.fullname" . }} \
+      -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
+{{- end }}
+
+  Add to /etc/hosts:
+    <loadbalancer-ip>  {{ .Values.ingress.host }}
+
+  Then open https://{{ .Values.ingress.host }} in your browser.
+  (self-signed cert — click "Proceed anyway" / "Advanced")

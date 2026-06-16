@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regui
+  namespace: registry
+  labels:
+    app: regui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: regui
+  template:
+    metadata:
+      labels:
+        app: regui
+    spec:
+      containers:
+        - name: regui
+          image: 127.0.0.1:5000/regui:v7
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: regui
+  namespace: registry
+spec:
+  selector:
+    app: regui
+  ports:
+    - port: 80
+      targetPort: 80
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: regui
+  namespace: registry
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`regui.test`)
+      kind: Rule
+      services:
+        - name: regui
+          port: 80
+  tls:
+    secretName: registry-tls
+

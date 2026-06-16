@@ -1,0 +1,15 @@
+---
+env: production
+timezone: UTC
+
+# Proxy / registry mirrors (if applicable)
+proxy_env: {}
+#  http_proxy: http://proxy.example.com:8080
+#  https_proxy: http://proxy.example.com:8080
+
+# Security
+ssh_hardening: false
+fail2ban_enabled: false
+
+# Package mirrors
+package_mirror: ""

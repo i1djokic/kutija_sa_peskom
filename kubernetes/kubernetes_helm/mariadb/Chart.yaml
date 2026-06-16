@@ -1,0 +1,16 @@
+apiVersion: v2
+name: mariadb
+description: MariaDB database with phpMyAdmin management UI
+type: application
+version: 0.1.0
+appVersion: "11.4"
+kubeVersion: ">=1.19.0-0"
+keywords:
+  - mariadb
+  - mysql
+  - phpmyadmin
+  - database
+home: https://mariadb.org/
+icon: https://mariadb.com/wp-content/uploads/2019/11/mariadb-logo-vertical_blue.svg
+sources:
+  - https://github.com/MariaDB/server

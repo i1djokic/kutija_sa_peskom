@@ -1,0 +1,33 @@
+Floci — Fast, Free AWS Emulator
+
+Floci has been deployed to your cluster.
+
+  Access via DNS name: aws.local.test
+
+{{- if .Values.ingress.enabled }}
+  1. If using an Ingress controller, add aws.local.test to your DNS or /etc/hosts
+     pointing to your cluster's ingress IP, then:
+
+     export AWS_ENDPOINT_URL=http://{{ (index .Values.ingress.hosts 0).host }}:{{ .Values.service.port }}
+{{- end }}
+
+  1. For direct access, forward the service port:
+
+     kubectl port-forward --namespace {{ .Release.Namespace }} \
+       svc/{{ include "floci.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+  Then configure your AWS CLI:
+
+     export AWS_ENDPOINT_URL=http://aws.local.test:{{ .Values.service.port }}
+     export AWS_ACCESS_KEY_ID=test
+     export AWS_SECRET_ACCESS_KEY=test
+     export AWS_DEFAULT_REGION=us-east-1
+     aws s3 mb s3://my-bucket
+
+  For NodePort access, find the node port and IP:
+
+     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} \
+       -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "floci.fullname" . }})
+     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} \
+       -o jsonpath="{.items[0].status.addresses[0].address}")
+     echo http://$NODE_IP:$NODE_PORT

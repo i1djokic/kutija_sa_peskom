@@ -1,0 +1,10 @@
+Messageboard has been deployed!
+
+Get the application URL by running:
+  kubectl get ingress {{ include "messageboard.fullname" . }} -o jsonpath='{.spec.rules[0].host}'
+
+To check the deployment status:
+  kubectl rollout status deployment/{{ include "messageboard.fullname" . }}
+
+To view the pods:
+  kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}

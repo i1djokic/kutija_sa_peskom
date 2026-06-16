@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: debug
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debian-debug
+  namespace: debug
+  labels:
+    app: debian-debug
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debian-debug
+  template:
+    metadata:
+      labels:
+        app: debian-debug
+    spec:
+      containers:
+        - name: debian
+          image: 127.0.0.1:5000/debian-networking:latest
+          command:
+            - sleep
+            - infinity
+          stdin: true
+          tty: true
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"

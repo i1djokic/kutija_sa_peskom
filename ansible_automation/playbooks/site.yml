@@ -1,0 +1,32 @@
+---
+- name: Apply base configuration to all hosts
+  hosts: all
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+    - name: Set timezone
+      community.general.timezone:
+        name: "{{ timezone }}"
+      when: timezone is defined
+
+  roles:
+    - role: packages
+      tags: packages
+
+- name: Configure web servers
+  hosts: web
+  become: true
+
+  roles:
+    - role: apache
+      tags: apache
+
+  post_tasks:
+    - name: Display web server info
+      ansible.builtin.debug:
+        msg:
+          - "Apache configured on {{ ansible_fqdn }}"
+          - "Document root: {{ apache_document_root }}"
+          - "Listen port: {{ apache_listen_port }}"
+      tags: apache

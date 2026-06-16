@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: ansible-automation
+  description: Base system packages installation role
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+  galaxy_tags:
+    - packages
+    - system
+    - base
+
+dependencies: []

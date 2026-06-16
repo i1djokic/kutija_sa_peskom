@@ -1,0 +1,135 @@
+# -- Number of replicas
+replicaCount: 1
+
+image:
+  # -- Image repository
+  repository: floci/floci
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag (defaults to Chart.appVersion)
+  tag: ""
+
+imagePullSecrets: []
+
+# -- Override the name of the release
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# -- Annotations for the pod
+podAnnotations: {}
+
+# -- Pod-level security context
+podSecurityContext:
+  runAsNonRoot: false
+  fsGroup: 1000
+
+# -- Container-level security context
+securityContext:
+  capabilities:
+    add:
+      # Required for advanced networking features
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_PTRACE
+  runAsUser: 0
+
+service:
+  # -- Kubernetes service type
+  type: LoadBalancer
+  # -- Service port
+  port: 4566
+  # -- Node port (when type is NodePort)
+  nodePort: ""
+  # -- Annotations for the service
+  annotations: {}
+
+# -- Resource limits and requests
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# -- Horizontal Pod Autoscaler configuration
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: ""
+
+# -- Node selector labels
+nodeSelector: {}
+
+# -- Tolerations
+tolerations: []
+
+# -- Affinity rules
+affinity: {}
+
+# -- Additional labels for all resources
+additionalLabels: {}
+
+# -- Additional environment variables (passed directly to the container)
+extraEnv: []
+
+# Floci specific settings
+
+# -- Mount the Docker socket. Required for Lambda, ECS, EKS, EC2, RDS,
+# ElastiCache, CodeBuild, Athena and other services that launch real containers.
+dockerSocket:
+  # -- Enable Docker socket mount
+  enabled: false
+  # -- Path to the Docker socket on the host
+  hostPath: /var/run/docker.sock
+
+# -- Persistence for Floci data directory (/app/data)
+persistence:
+  # -- Enable persistent volume
+  enabled: false
+  # -- Storage class (empty string uses default)
+  storageClass: ""
+  # -- Access mode
+  accessMode: ReadWriteOnce
+  # -- Size of the persistent volume
+  size: 5Gi
+  # -- Existing PVC name (mutually exclusive with storageClass/size)
+  existingClaim: ""
+
+# -- Floci configuration environment variables
+config:
+  # -- Storage mode: memory, filesystem, or hybrid
+  storageMode: "memory"
+  # -- Docker network to use for spawned service containers
+  dockerNetwork: ""
+  # -- Enable TLS/HTTPS (auto-generates self-signed cert)
+  tlsEnabled: false
+  # -- Log level (TRACE, DEBUG, INFO, WARN, ERROR)
+  logLevel: "INFO"
+  # -- Comma-separated list of services to enable (empty = all)
+  services: ""
+  # -- Base port for edge service (default: 4566)
+  edgePort: 4566
+  # -- Enable LocalStack compatiblity env var translation
+  localstackCompat: true
+  # -- Floci hostname for init scripts and AWS_ENDPOINT_URL
+  hostname: "aws.local.test"
+
+# -- Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: aws.local.test
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []

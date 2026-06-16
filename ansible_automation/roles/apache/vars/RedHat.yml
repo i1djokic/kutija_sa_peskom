@@ -1,0 +1,8 @@
+---
+apache_package: httpd
+apache_service: httpd
+apache_user: apache
+apache_group: apache
+apache_vhost_dir: /etc/httpd/conf.d
+apache_log_dir: /var/log/httpd
+apache_mod_enable_cmd: ""
