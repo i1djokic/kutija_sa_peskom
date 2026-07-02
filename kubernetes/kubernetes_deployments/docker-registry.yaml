@@ -28,6 +28,7 @@ spec:
       labels:
         app: docker-registry
     spec:
+      hostname: registry.test
       containers:
         - name: registry
           image: registry:2

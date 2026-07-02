@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: messageboard
+  namespace: smapp
   labels:
     app: messageboard
 spec:
@@ -21,6 +22,7 @@ spec:
       containers:
       - name: nginx
         image: 127.0.0.1:5000/simple_messageboard:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
@@ -29,16 +31,16 @@ spec:
         - name: DB_TYPE
           value: "mysql"
         - name: DB_HOST
-          value: "my-db-mariadb"
+          value: "messageboard-db"
         - name: DB_PORT
           value: "3306"
         - name: DB_USER
-          value: "root"
+          value: "app"
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: my-db-mariadb
-              key: mariadb-root-password
+              name: messageboard-db
+              key: database-password
         - name: DB_NAME
           value: "app"
         securityContext:

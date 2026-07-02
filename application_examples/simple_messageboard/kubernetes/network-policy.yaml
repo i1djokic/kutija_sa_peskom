@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: messageboard-db
+  namespace: smapp
+  labels:
+    app: messageboard
+spec:
+  podSelector:
+    matchLabels:
+      app: messageboard-db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: messageboard
+    ports:
+    - protocol: TCP
+      port: 3306

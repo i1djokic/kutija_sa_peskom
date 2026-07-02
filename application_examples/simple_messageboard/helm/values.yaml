@@ -28,12 +28,61 @@ ingress:
 
 db:
   type: mysql
-  host: my-db-mariadb
+  host: ""
   port: "3306"
   user: root
   name: app
-  existingSecret: my-db-mariadb
+  existingSecret: ""
   existingSecretKey: mariadb-root-password
+
+mariadb:
+  enabled: true
+  replicaCount: 1
+  rootPassword: "changeme"
+  database: "app"
+  user: "app"
+  password: "apppass"
+  image:
+    repository: mariadb
+    tag: 10.11
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3306
+  existingSecret: ""
+  args:
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_unicode_ci
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    fsGroup: 999
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  livenessProbe:
+    exec:
+      command:
+        - mariadb-admin
+        - ping
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readinessProbe:
+    exec:
+      command:
+        - mariadb-admin
+        - ping
+    initialDelaySeconds: 5
+    periodSeconds: 5
 
 resources:
   requests:

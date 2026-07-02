@@ -426,7 +426,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == '__main__':
-    retries = 10 if DB_TYPE == 'mysql' else 1
+    retries = 30 if DB_TYPE == 'mysql' else 1
     for i in range(retries):
         try:
             _init_db()
